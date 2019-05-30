@@ -85,14 +85,14 @@ int Cubic(double *x,double a,double b,double c) {
 void Widget::slotCalculate(){
 
     double A,As,b,B,h,h0,as,w,ksi1,ksi2,gamma,Rb,Rbu,Mb,Ms,
-          Eb,Es,E0,E_T,E_R,eps_s,eps_T,eps_bu,x,lambda,
-          sigma_S,sigma_R,sigma_T,S,y,y1,y2,y3,
-          f1,f2,f3,M,m,Rs,miu,
-          z[3],a2, a1,a0,mt,f,v,
-          ln,t, t_ln, l4,zn,t1,t2,t3;
+            Eb,Es,E0,E_T,E_R,eps_s,eps_T,eps_bu,x,lambda,
+            sigma_S,sigma_R,sigma_T,S,y,y1,y2,y3,
+            f1,f2,f3,M,m,Rs,miu,
+            z[3],a2, a1,a0,mt,f,v,
+            ln,t, t_ln, l4,zn,t1,t2,t3;
     int k, i;
 
-   /*b=20;B=15; h=40;h0=37; as=3; B=15; Rb=110; Eb=240000;
+    /*b=20;B=15; h=40;h0=37; as=3; B=15; Rb=110; Eb=240000;
    A=400;Es=2E6;M=1200000;
    eps_bu=0.0025; Rs=4000;m=68.6;*/
 
@@ -173,156 +173,161 @@ void Widget::slotCalculate(){
         ui->mEdit->setFocus(Qt::OtherFocusReason);
         return;
     }
-    Eb = ui->mEdit->text().toDouble();
+    m = ui->mEdit->text().toDouble();
 
-   lambda=1/(1.25+0.0015*Rb);
-   //printf("lambda=%lf\n",lambda);
+    lambda=1/(1.25+0.0015*Rb);
+    //printf("lambda=%lf\n",lambda);
 
-   ui->lambdaLabel->setText(QString::number(lambda));
+    ui->lambdaLabel->setText(QString::number(lambda));
 
-   Rbu=eps_bu*Eb/(1+lambda*eps_bu*Eb/Rb);
-   //printf("Rbu=%lf\n",Rbu);
+    Rbu=eps_bu*Eb/(1+lambda*eps_bu*Eb/Rb);
+    //printf("Rbu=%lf\n",Rbu);
 
-   ui->RbuLabel->setText(QString::number(Rbu));
+    ui->RbuLabel->setText(QString::number(Rbu));
 
-   eps_bu=Rbu/(Eb*(1-lambda*Rbu/Rb));
-   //printf("eps_bu=%lf\n",eps_bu);
+    eps_bu=Rbu/(Eb*(1-lambda*Rbu/Rb));
+    //printf("eps_bu=%lf\n",eps_bu);
 
-   ui->eps_buLabel->setText(QString::number(eps_bu));
+    ui->eps_buLabel->setText(QString::number(eps_bu));
 
-   t=lambda*eps_bu*Eb;
-   //printf("t=%lf\n",t);
+    t=lambda*eps_bu*Eb;
+    //printf("t=%lf\n",t);
 
+    /* это временная переменная
    ui->tLabel->setText(QString::number(t));
+   */
 
-   t=Rbu/t;
-   //printf("eps_T=%lf\n",eps_T);   ln=log(1+1/t);
+    t=Rbu/t;
+    //printf("eps_T=%lf\n",eps_T);   ln=log(1+1/t);
 
-   ui->eps_TLabel->setText(QString::number(eps_T));
+    ui->eps_TLabel->setText(QString::number(eps_T));
 
-   t_ln=t*ln;
-   w=(1-t_ln)/lambda;
-   //printf("w=%lf\n",w);
+    t_ln=t*ln;
+    w=(1-t_ln)/lambda;
+    //printf("w=%lf\n",w);
 
-   ui->wLabel->setText(QString::number(w));
+    ui->wLabel->setText(QString::number(w));
 
-   gamma=(0.5-t+t*t_ln)/(1-t_ln);
-  // printf("gamma=%lf\n",gamma);
+    gamma=(0.5-t+t*t_ln)/(1-t_ln);
+    // printf("gamma=%lf\n",gamma);
 
-   ui->gammaLabel->setText(QString::number(gamma));
+    ui->gammaLabel->setText(QString::number(gamma));
 
-   t=1-gamma;
-   ksi2=0.5/t*(1-sqrt(1-4*M*t/(w*b*h0*h0*Rbu)));
-   //printf("ksi2=%lf\n",ksi2);
+    t=1-gamma;
+    ksi2=0.5/t*(1-sqrt(1-4*M*t/(w*b*h0*h0*Rbu)));
+    //printf("ksi2=%lf\n",ksi2);
 
-   ui->ksi2Label->setText(QString::number(ksi2));
+    ui->ksi2Label->setText(QString::number(ksi2));
 
-   l4=lambda*lambda;
-   l4=l4*l4;
-   zn=l4*t;
-   a2=-(t+l4*(1+t))/zn;
-   a1=(1+l4)/zn;
-   a0=-M/(zn*w*b*h0*h0*Rb);
-   Cubic(z, a2,a1,a0);
-   ksi2=z[0];
-   k=0;
-   do
-   { k++;
-     ksi1=ksi2;
-     t=lambda*lambda;
-     t=t*t;
-     Rbu=Rb*(1+t*(1-ksi1));
-    // printf("Rbu=%lf\n",Rbu);
+    l4=lambda*lambda;
+    l4=l4*l4;
+    zn=l4*t;
+    a2=-(t+l4*(1+t))/zn;
+    a1=(1+l4)/zn;
+    a0=-M/(zn*w*b*h0*h0*Rb);
+    Cubic(z, a2,a1,a0);
+    ksi2=z[0];
+    k=0;
+    do
+    { k++;
+        ksi1=ksi2;
+        t=lambda*lambda;
+        t=t*t;
+        Rbu=Rb*(1+t*(1-ksi1));
+        // printf("Rbu=%lf\n",Rbu);
 
-     ui->RbuLabel->setText(QString::number(Rbu));
+        ui->RbuLabel->setText(QString::number(Rbu));
 
-     eps_bu=Rbu/(Eb*(1-lambda*Rbu/Rb));
-    // printf("eps_bu=%lf\n",eps_bu);
+        eps_bu=Rbu/(Eb*(1-lambda*Rbu/Rb));
+        // printf("eps_bu=%lf\n",eps_bu);
 
-     ui->eps_buLabel->setText(QString::number(eps_bu));
+        ui->eps_buLabel->setText(QString::number(eps_bu));
 
-     t=lambda*eps_bu*Eb;
-     //printf("t=%lf\n",t);
+        t=lambda*eps_bu*Eb;
+        //printf("t=%lf\n",t);
 
+        /* временная переменная
      ui->tLabel->setText(QString::number(t));
+     */
+        t=Rbu/t;
+        ln=log(1+1/t);
+        t_ln=t*ln;
+        w=(1-t_ln)/lambda;
+        //printf("w=%lf\n",w);
 
-     t=Rbu/t;
-     ln=log(1+1/t);
-     t_ln=t*ln;
-     w=(1-t_ln)/lambda;
-     //printf("w=%lf\n",w);
+        ui->wLabel->setText(QString::number(w));
 
-     ui->wLabel->setText(QString::number(w));
+        // printf("eps_T=%lf\n",eps_T);
 
-    // printf("eps_T=%lf\n",eps_T);
+        ui->eps_TLabel->setText(QString::number(eps_T));
 
-     ui->eps_TLabel->setText(QString::number(eps_T));
+        gamma=(0.5-t+t*t_ln)/(1-t_ln);
+        //printf("gamma=%lf\n",gamma);
 
-     gamma=(0.5-t+t*t_ln)/(1-t_ln);
-     //printf("gamma=%lf\n",gamma);
+        ui->gammaLabel->setText(QString::number(gamma));
 
-     ui->gammaLabel->setText(QString::number(gamma));
+        t=1-gamma;
+        //ksi2=0.5/t*(1-sqrt(1-4*M*t/(w*b*h0*h0*Rbu)));
+        // printf("ksi2=%lf\n",ksi2);
 
-     t=1-gamma;
-    //ksi2=0.5/t*(1-sqrt(1-4*M*t/(w*b*h0*h0*Rbu)));
-    // printf("ksi2=%lf\n",ksi2);
+        ui->ksi2Label->setText(QString::number(ksi2));
 
-     ui->ksi2Label->setText(QString::number(ksi2));
+        l4=lambda*lambda;
+        l4=l4*l4;
+        zn=l4*t;
+        a2=-(t+l4*(1+t))/zn;
+        a1=(1+l4)/zn;
+        a0=-M/(zn*w*b*h0*h0*Rb);
+        k = Cubic(z, a2,a1,a0);
+        ksi2=z[0];
+        // printf("ksi2=%lf\n",ksi2);
 
-     l4=lambda*lambda;
-     l4=l4*l4;
-     zn=l4*t;
-     a2=-(t+l4*(1+t))/zn;
-     a1=(1+l4)/zn;
-     a0=-M/(zn*w*b*h0*h0*Rb);
-     k = Cubic(z, a2,a1,a0);
-     ksi2=z[0];
-     // printf("ksi2=%lf\n",ksi2);
+        ui->ksi2Label->setText(QString::number(ksi2));
 
-     ui->ksi2Label->setText(QString::number(ksi2));
+    }
+    while(fabs(ksi1-ksi2)>0.02);
+    eps_s=eps_bu*(1-ksi2)/ksi2;
+    //printf("eps_s=eps_s%lf\n",eps_s);
 
-   }
-   while(fabs(ksi1-ksi2)>0.02);
-   eps_s=eps_bu*(1-ksi2)/ksi2;
-   //printf("eps_s=eps_s%lf\n",eps_s);
+    ui->eps_sLabel->setText(QString::number(eps_s));
 
-   ui->eps_sLabel->setText(QString::number(eps_s));
+    //printf("k=%i\n",k );
 
-   //printf("k=%i\n",k );
-
+    /* временная переменная
    ui->kLabel->setText(QString::number(k));
+   */
 
-  //eps_s=0.00133;
-   eps_T=1.25*Rs/Es;
-   //printf("eps_T=%lf\n",eps_T);
+    //eps_s=0.00133;
+    eps_T=1.25*Rs/Es;
+    //printf("eps_T=%lf\n",eps_T);
 
-   ui->eps_TLabel->setText(QString::number(eps_T));
+    ui->eps_TLabel->setText(QString::number(eps_T));
 
-   t1=m+0.2;
-   t2=3.2*m;
-   t3=1.6*eps_s*Es;
-   //printf("t3=%le\n",t3);
+    t1=m+0.2;
+    t2=3.2*m;
+    t3=1.6*eps_s*Es;
+    //printf("t3=%le\n",t3);
+    /* временная переменная
+    * ui->t3Label->setText(QString::number(t3));
+    */
+    zn=bin_div(func,t1,t2,t3,Rs,-1,0,0.0001)+1;
+    //printf("y=%leb=20;\n",zn);
 
-   ui->t3Label->setText(QString::number(t3));
+    ui->yLabel->setText(QString::number(zn));
 
-   zn=bin_div(func,t1,t2,t3,Rs,-1,0,0.0001)+1;
-   //printf("y=%leb=20;\n",zn);
+    sigma_S=(zn)*Rs;
+    //printf("sigma_S=%le\n",sigma_S);
 
-   ui->yLabel->setText(QString::number(zn));
+    ui->sigma_SLabel->setText(QString::number(sigma_S));
 
-   sigma_S=(zn)*Rs;
-   //printf("sigma_S=%le\n",sigma_S);
+    As=M/(h0*sigma_S*(1-ksi2*(1-gamma)));
+    //printf("As=%le\n",As);
 
-   ui->sigma_SLabel->setText(QString::number(sigma_S));
+    ui->AsLabel->setText(QString::number(As));
 
-   As=M/(h0*sigma_S*(1-ksi2*(1-gamma)));
-   //printf("As=%le\n",As);
+    miu=As*100/(b*h0);
+    //printf("miu=%le\n",miu);
 
-   ui->AsLabel->setText(QString::number(As));
-
-   miu=As*100/(b*h0);
-   //printf("miu=%le\n",miu);
-
-   ui->miuLabel->setText(QString::number(miu));
+    ui->miuLabel->setText(QString::number(miu));
 
 }
