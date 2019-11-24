@@ -25,10 +25,14 @@ DEFINES += QT_DEPRECATED_WARNINGS
 CONFIG += c++11
 
 SOURCES += \
+        core.cpp \
+        coreadapter.cpp \
         main.cpp \
         widget.cpp
 
 HEADERS += \
+        core.h \
+        coreadapter.h \
         widget.h
 
 FORMS += \

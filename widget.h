@@ -2,8 +2,7 @@
 #define WIDGET_H
 
 #include <QWidget>
-#include <QValidator>
-#include <cmath>
+#include <coreadapter.h>
 
 namespace Ui {
 class Widget;
@@ -19,9 +18,8 @@ public:
 
 private:
     Ui::Widget *ui;
+    CoreAdapter *core_adapter;
 
-private slots:
-    void slotCalculate();
 };
 
 #endif // WIDGET_H
